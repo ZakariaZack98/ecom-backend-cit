@@ -112,7 +112,7 @@ userSchema.pre("save", async function (next) {
   const existingUser = await this.constructor.findOne({
     $or: [{ email: this.email }, { phone: this.phone }],
   });
-  if (existingUser && existingUser._id.toString() !== this._id?.toString()) {
+  if (existingUser && existingUser._id != this._id && existingUser._id == this._id) {
     throw new Error("User already exists");
   }
   next();
@@ -125,7 +125,7 @@ userSchema.methods.comparePassword = async function (plainPassword) {
 
 // * Generate access token  ==================================================
 userSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
+  return jwt.sign(
     {
       id: this._id,
       email: this.email,
@@ -139,8 +139,8 @@ userSchema.methods.generateAccessToken = async function () {
 };
 
 // * Generate refresh token  ==================================================
-userSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
+userSchema.methods.generateRefreshToken = async function () {
+  return jwt.sign(
     {
       id: this._id,
     },

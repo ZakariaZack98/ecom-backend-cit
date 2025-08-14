@@ -11,12 +11,15 @@ exports.globalErrorHandler = (error, req, res, next) => {
     return res.status(statusCode).json({
       message: error.message,
     });
-  } else {
+  } 
+  
+  if (process.env.NODE_ENV == 'development') {
     return res.status(statusCode).json({
       message: error.message,
       statusCode: error.statusCode,
       isOperationalError: error.isOperationalError,
       data: error.data,
+      stack: error.stack
     });
   }
 };

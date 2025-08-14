@@ -16,8 +16,7 @@ const userValidationSchema = Joi.object(
         "string.pattern.base":
           "Username can only contain letters (a-z, A-Z), numbers (0-9), underscores (_), or dots (.)",
         "string.trim": "Spaces are not allowed in the username",
-      })
-      .required(),
+      }),
     email: Joi.string()
       .trim()
       .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -64,7 +63,8 @@ const userValidationSchema = Joi.object(
 
 exports.validateUser = async (req,res) => {
   try {
-    return await userValidationSchema.validateAsync(req.body)
+    const validatedData = await userValidationSchema.validateAsync(req.body);
+    return validatedData;
   } catch (error) {
     console.log(error);
     res.status(401).json(new CustomError(401, error.message))
