@@ -110,17 +110,34 @@ exports.resetPassword = asyncHandler(async (req, res) => {
 exports.login = asyncHandler(async (req, res) => {
   const userData = await validateUser(req);
   const { email, phone, password } = userData;
-  const matchedUser = await User.findOne({ $or: [{ email }, { phone }] });
+  //! const matchedUser = await User.findOne({ $or: [{ email: req.body.email }, { phone: req.body.phone }] });
+  const matchedUser = await User.findOne({email, phone})
   if (!matchedUser) {
     throw new CustomError(404, "User not found");
   }
-  const passwordMatch = matchedUser.comparePassword(password);
+  console.log(matchedUser);
+  const passwordMatch = await matchedUser.comparePassword(password);
   if(!passwordMatch) {
     throw new CustomError(401, 'Password is wrong')
   }
+
   //* Generate tokens
   const accessToken = await matchedUser.generateAccessToken();
   const refreshToken = await matchedUser.generateRefreshToken();
-  //* Save access tokens to cookies
-  
+
+  //* Save refresh tokens to cookies
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: '/',
+    maxAge: 15 * 24 * 60 * 60 * 1000
+  })
+  //* Save refresh token to DB
+  matchedUser.refreshToken = refreshToken;
+  await matchedUser.save();
+  ApiResponse.sendResponse(res, 200, 'Refresh token saved successfully', {
+    name: matchedUser.name, 
+    refreshToken
+  })
 });

@@ -109,10 +109,8 @@ userSchema.pre("save", async function (next) {
 
 //  * Check user already exists or not ======================================
 userSchema.pre("save", async function (next) {
-  const existingUser = await this.constructor.findOne({
-    $or: [{ email: this.email }, { phone: this.phone }],
-  });
-  if (existingUser && existingUser._id != this._id && existingUser._id == this._id) {
+  const existingUser = await this.constructor.findOne({email: this.email, phone: this.phone});
+  if (existingUser && !existingUser._id.equals(this._id)) {
     throw new Error("User already exists");
   }
   next();
@@ -120,7 +118,7 @@ userSchema.pre("save", async function (next) {
 
 // * Compare/Match the human-readable password with hashed password =========
 userSchema.methods.comparePassword = async function (plainPassword) {
-  await bcrypt.compare(plainPassword, this.password);
+  return await bcrypt.compare(plainPassword, this.password);
 };
 
 // * Generate access token  ==================================================
