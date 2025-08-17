@@ -149,7 +149,7 @@ userSchema.methods.generateRefreshToken = async function () {
 
 // * Verify access token =====================================================
 userSchema.methods.verifyAccessToken = async function (token) {
-  return await jwt.verify(token, process.env.REFRESHTOKEN_SECRET);
+  return jwt.verify(token, process.env.ACCESSTOKEN_SECRET);
 };
 
 module.exports = mongoose.model("User", userSchema, "users");
