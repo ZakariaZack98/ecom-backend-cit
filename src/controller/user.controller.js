@@ -194,8 +194,16 @@ exports.logout = asyncHandler(async (req, res) => {
     }
   }
 
-  return ApiResponse.sendResponse(200, "Logout Successfull", matchedUser);
+  return ApiResponse.sendResponse(res, 200, "Logout Successfull", matchedUser);
 });
 
 //* Get a user using token
-
+exports.getme = asyncHandler(async(req, res) => {
+  const token = req.body.accessToken;
+  const userInfo = jwt.verify(token, process.env.ACCESSTOKEN_SECRET);
+  const matchedUser = await User.findById(userInfo.id);
+  if (!matchedUser) {
+    throw new CustomError(404, "User not found");
+  }
+  ApiResponse.sendResponse(res, 200, "User found", matchedUser);
+})
