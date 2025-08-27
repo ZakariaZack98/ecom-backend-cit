@@ -47,7 +47,7 @@ exports.validateCategory = async (req, res) => {
 
     return {
       name: validatedData.name,
-      image: image.path
+      image
     };
 
   } catch (error) {
