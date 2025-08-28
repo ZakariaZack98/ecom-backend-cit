@@ -15,6 +15,10 @@ const categorySchema = new mongoose.Schema(
       unique: true,
     },
     image: {},
+    subcategory: [{
+      type: mongoose.Types.ObjectId,
+      ref: "Subcategory"
+    }],
     isActive: {
       type: Boolean,
       default: true,
@@ -47,6 +51,25 @@ categorySchema.pre("save", async function (next) {
   }
   next();
 });
+
+//? Helpers =========================
+function autoPopulate(next) {
+  this.populate({
+    path: 'subcategory'
+  })
+  next();
+}
+
+function autoSort(next) {
+  this.sort({
+    createdAt: -1
+  })
+  next()
+}
+
+//* Populate before fetching
+categorySchema.pre('find', autoPopulate, autoSort);
+categorySchema.pre('findOne', autoPopulate);
 
 module.exports =
   mongoose.model.Category || mongoose.model("Category", categorySchema, 'category');

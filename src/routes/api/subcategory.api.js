@@ -1,0 +1,10 @@
+const express = require('express');
+const _ = express.Router();
+const subcategoryController = require('../../controller/subcategory.controller');
+_.route('/create-subcategory').post(subcategoryController.createSubcategory);
+_.route('/getallsubcategory').get(subcategoryController.getAllSubcategory);
+_.route('/filter').get(subcategoryController.getActiveSubcategory);
+_.route('/:slug').get(subcategoryController.getSingleSubcategory);
+_.route('/update-subcategory/:slug').put(subcategoryController.updateSubcategory);
+_.route('/delete-subcategory/:slug').delete(subcategoryController.deleteSubcategory);
+module.exports = _;
