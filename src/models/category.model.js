@@ -23,10 +23,10 @@ const categorySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    // discount: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Discount"
-    // }
+    discount: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Discount"
+    }
   },
   {
     timestamps: true,
