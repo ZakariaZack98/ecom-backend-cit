@@ -13,7 +13,7 @@ exports.createCategory = asyncHandler(async(req, res) => {
   //* Save category to database
   const {name, image} = await validateCategory(req);
   const imageAsset = await uploadToCloudinary(image.path);
-  const newCategory = await categoryModel.create(({name, image: imageAsset, }))
+  const newCategory = await categoryModel.create(({name, image: imageAsset }))
   if(!newCategory) throw new CustomError(500, 'category creation failed')
 
   // * Send success response to client-side
