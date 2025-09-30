@@ -19,9 +19,7 @@ const productValidationSchema = Joi.object(
         "any.required": "Product name is required",
       }),
 
-    slug: Joi.string().trim().lowercase().required(),
     description: Joi.string().trim().min(10).required(),
-
     category: Joi.string().length(24).required(),
     subCategory: Joi.string().length(24),
     brand: Joi.string().length(24).required(),
@@ -91,7 +89,7 @@ exports.validateProduct = async (req, res) => {
 
     return {
       ...validatedData,
-      image: req.files.image.map((file) => file.path),
+      images: req.files.image.map((file) => file.path),
     };
   } catch (error) {
     console.log(error);

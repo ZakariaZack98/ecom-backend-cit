@@ -3,9 +3,9 @@ const { createSlug } = require("../helpers/slugMaker");
 
 const productSchema = new mongoose.Schema(
   {
-    _id: mongoose.Schema.Types.ObjectId,
     name: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true, trim: true,
+      lowercase: true, },
     description: { type: String, required: true },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Discount",
     },
-    image: [{}],
+    images: [{}],
     tag: [{ type: String, required: true }],
     manufactureCountry: { type: String },
     rating: { type: Number, max: 5 },
@@ -39,10 +39,12 @@ const productSchema = new mongoose.Schema(
     },
     variant: [{ type: mongoose.Schema.Types.ObjectId, ref: "Variant" }],
     availabilityStatus: { type: Boolean, required: true },
-    reviews: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Review",
-    }],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
     sku: { type: String, required: true, unique: true },
     qrCode: { type: String },
     barCode: { type: String },
@@ -72,13 +74,13 @@ const productSchema = new mongoose.Schema(
 );
 
 //* Check category slug already exists or not
-productSchema.pre("save", async function (next) {
-  const existingProduct = await this.constructor.findOne({ slug });
-  if (existingProduct && !existingProduct._id.equals(this._id)) {
-    throw new Error(`${this.name} already exists`);
-  }
-  next();
-});
+// productSchema.pre("save", async function (next) {
+//   const existingProduct = await this.constructor.findOne({ slug });
+//   if (existingProduct && !existingProduct._id.equals(this._id)) {
+//     throw new Error(`${this.name} already exists`);
+//   }
+//   next();
+// });
 
 //* Make a slug using slugify
 productSchema.pre("save", async function (next) {
