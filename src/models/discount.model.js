@@ -72,10 +72,11 @@ function autoPopulate(next) {
   }).populate({
     path: 'subCategory',
     select: '-__v',
-  }).populate({
-    path: 'product',
-    select: '-__v',
-  });
+  })
+  // .populate({
+  //   path: 'product',
+  //   select: '-__v',
+  // });
   next();
 }
 

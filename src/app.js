@@ -13,12 +13,6 @@ app.use(cors());
 //* All API Routes *//
 app.use('/api/v1', require('./routes/index.api'))
 
-
-
-
-
-
-
 // * Global error handling middleware *//
 app.use(globalErrorHandler);
 

@@ -3,5 +3,9 @@ const _ = express.Router();
 const discountController = require('../../controller/discount.controller');
 
 _.route('/create-discount').post(discountController.createDiscount);
+_.route('/all-discount').get(discountController.getAllDiscount);
+_.route('/:slug').get(discountController.getSingleDiscount);
+_.route('/update-discount/:slug').put(discountController.updateDiscount);
+_.route('/delete-discount/:slug').delete(discountController.deleteDiscount);
 
 module.exports = _;
