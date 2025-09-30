@@ -1,0 +1,232 @@
+user[icon:user , color :purple]{
+  _id objectId
+  name string
+  email string
+  phone number
+  image string
+  password string
+  isEmailVerified boolean
+  isPhoneVerified boolean
+  address string required
+  city string
+  state string
+  country string
+  zipCode number max 4
+  dateOfBirth Date
+  gender string enum ["male", "female", "other"]
+  lastlogin Date
+  lastLogout Date
+  cart objectId[] ref product
+  wishList objectId[] ref product
+  newsLetterSubscribe boolean
+  roles objectId[] ref Role
+  permissions objectId [] ref Permission
+  resetPasswordOtp number max 4
+  resetPasswordExpires Date
+  twoFactorEnabled boolean
+  isBlocked boolean
+  isActive boolean
+  refreshToken string
+}  
+user.roles < role._id 
+role[icon:user-edit , color:green]{
+  _id objectId
+  name string
+  slug string
+  isActive boolean
+}
+
+permission [icon:perplexity , color:orange] {
+  _id objectId
+  slug string
+  permissionName string
+  actions string[] enum [View  edit  delete add]
+  isActive boolean
+}
+userPermisson [icon:user-md , color :blue]{
+  _id objectId
+  user objectId  ref user
+  permissionName objectId[] ref permission
+  role objectId [] ref role
+  isActive boolean
+} 
+
+
+category[icon:cisco-vpn-gateway ,color:yellow]{
+  _id objectId
+  name string
+  image string
+  slug string
+  subCategory objectId[] ref subCategory
+  discount objectId ref discount
+  isActive boolean
+}    
+
+subcategory [icon:suitcase , color:blue] {
+  _id objectId 
+  slug string
+  name string
+  category objectId ref category
+  discount objectId ref discount
+  isActive boolean
+}
+    
+discount [icon:display , color:red]{
+  _id objectId
+  discountValidFrom Date
+  discountValidTo Date
+  discountName string
+  slug string
+  discountType string enum ["tk", "percentance"]
+  discountValueByAmount number
+  discountValueByPercentance number max 100
+  discountPlan string enum [category ,subCategory , product]
+  category objectId ref category
+  subCategory objectId ref subCategory
+  product objectId ref product
+}
+
+brand [icon:braces ] {
+  _id objectId
+  slug string
+  name string 
+  image string
+  isActive boolean
+} 
+
+warrenty[icon:warehouse]{
+  _id objectId
+  warrentyValidFrom Date
+  wareentyValidTo Date
+  wareentyDurationDay number
+  wareentyDurat       ionMoth number
+  wareentyDurationYear number
+  wareentyPolicy string
+  product ref product
+}
+shippingInfo[icon:shield]{
+  _id objectId
+  importDestination string
+  importerInfo string
+  maxShipmentDuration number
+  shippingCharge number
+  shippingDutyCost number
+}
+
+review [icon:react]{
+  _id objectId
+  reviewerName objectId ref user
+  comment string
+  rating number max 5
+  image string
+}
+
+wareHouser[icon:warehouse , color:red]{
+  _id objectId
+  slug string
+  warehouseLocation string
+  warehouseName string
+  stock number
+  product objectId ref product
+  alertStok number min 5
+  isActive boolean
+}
+
+ 
+product [icon:progress ] {
+  _id objectId
+  name string
+  slug string
+  description string
+  category objectId ref category
+  subCategory objectId ref subCategory
+  brand objectId ref brand
+  discount objectId ref discount
+  image string []
+  tag string[]
+  manufactureCountry string
+  rating number max 5
+  warrantyInformation objectId ref warrenty
+  shippingInformation objectId ref shippingInfo
+  variant []objectId ref variant
+  availabilityStatus boolean
+  reviews objectId ref review
+  sku string
+  qrCode string
+  barCode string
+  groupUnit string enum ["Box", "Packet", "Dozen", "Custom"]
+  groupUnitQuantity number
+  unit [Piece Kg Gram Packet liter]
+  size string[]
+  color string []
+  totalStock number
+  warehouseLocation objectId ref warehouse
+  purchasePrice number 100
+  retailPrice number
+  wholeSalePrice number
+  minimunWholeSaleOrderQuantity number min 100
+  minimumorde number
+  instock boolean
+  isActive boolean 
+} 
+item{
+  product objectId ref product
+  quantity number
+  subTotal number
+  price number
+  actualPrice number
+}
+cart[icon:car , color:purple]{
+  _id objectId
+  user objectId ref user
+  guestid string
+  item [item]
+  coupon objectId ref coupon
+  totalPrice number
+  discountPrice number
+  afterappyCouponPrice number
+}
+wishListItem {
+  product objectId ref product
+  addedAt Date
+}
+wishList[icon:windows , color:blue]{
+  _id objectId
+  user objectId ref user
+  guestid string
+  item [wishListItem]
+}
+
+cart.user - user._id
+
+coupon [icon:couchbase , color : yellow]{
+  _id objectId
+  slug string
+  code string
+  discountType string enum ["percentage", "tk"]
+  discountValue number
+  expireAt Date
+  usageLimit number
+  usedCount number
+  
+}
+
+category.subCategory < subcategory._id
+category.discount - discount._id
+subcategory.discount -  discount._id
+subcategory.category > category._id
+discount.category - category._id
+discount.subCategory - subcategory._id
+userPermisson.user - user._id
+userPermisson.role < role._id
+userPermisson.permissionName < permission._id
+product.variant < variant._id
+product.warehouseLocation - wareHouser._id
+product.reviews - review._id
+product.shippingInformation - shippingInfo._id
+product.category < category._id
+product.subCategory < subcategory._id
+product.brand - brand._id
+product.discount - discount._id
+product.warrantyInformation - warrenty._id
+variant.product - product._id            

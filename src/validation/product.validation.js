@@ -23,22 +23,22 @@ const productValidationSchema = Joi.object(
     description: Joi.string().trim().min(10).required(),
 
     category: Joi.string().length(24).required(),
-    subCategory: Joi.string().length(24).required(),
+    subCategory: Joi.string().length(24),
     brand: Joi.string().length(24).required(),
-    discount: Joi.string().length(24).required(),
-    warrantyInformation: Joi.string().length(24).required(),
-    shippingInformation: Joi.string().length(24).required(),
-    variant: Joi.array().items(Joi.string().length(24)).min(1).required(),
-    warehouseLocation: Joi.string().length(24).required(),
-    reviews: Joi.string().length(24).required(),
+    discount: Joi.string().length(24),
+    warrantyInformation: Joi.string().length(24),
+    shippingInformation: Joi.string().length(24),
+    variant: Joi.array().items(Joi.string().length(24)).min(1),
+    warehouseLocation: Joi.string().length(24),
+    reviews: Joi.string().length(24),
 
-    tag: Joi.array().items(Joi.string().trim()).min(1).required(),
-    manufactureCountry: Joi.string().trim().required(),
-    rating: Joi.number().min(0).max(5).required(),
+    tag: Joi.array().items(Joi.string().trim()).min(1),
+    manufactureCountry: Joi.string().trim(),
+    rating: Joi.number().min(0).max(5),
 
     sku: Joi.string().trim().required(),
-    qrCode: Joi.string().trim().required(),
-    barCode: Joi.string().trim().required(),
+    qrCode: Joi.string().trim(),
+    barCode: Joi.string().trim(),
 
     groupUnit: Joi.string()
       .valid("Box", "Packet", "Dozen", "Custom")
@@ -47,7 +47,7 @@ const productValidationSchema = Joi.object(
     unit: Joi.string().trim().required(),
 
     size: Joi.array().items(Joi.string().trim()).min(1).required(),
-    color: Joi.array().items(Joi.string().trim()).min(1).required(),
+    color: Joi.array().items(Joi.string().trim()).min(1),
 
     totalStock: Joi.number().min(0).required(),
     purchasePrice: Joi.number().min(100).required(),
