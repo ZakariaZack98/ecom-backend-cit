@@ -29,7 +29,7 @@ exports.createDiscount = asyncHandler(async(req, res) => {
 //* Get all discount
 exports.getAllDiscount = asyncHandler(async(_, res) => {
   const allDiscounts = await discountModel.find().sort({createdAt: -1});
-  if(allDiscounts.length === 0) throw new CustomError(404, 'category not found');
+  if(allDiscounts.length === 0) throw new CustomError(404, 'discount not found');
   ApiResponse.sendResponse(res, 200, 'discounts found', allDiscounts);
 })
 
@@ -81,5 +81,5 @@ exports.deleteDiscount = asyncHandler(async(req, res) => {
   }
   //* Delete and send response
   await discountModel.findOneAndDelete({slug})
-  ApiResponse.sendResponse(res, 200, 'discount found', matchedDiscount);
+  ApiResponse.sendResponse(res, 200, 'discount deleted', matchedDiscount);
 })

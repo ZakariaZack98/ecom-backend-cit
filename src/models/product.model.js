@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema(
       ref: "ShippingInfo",
     },
     variant: [{ type: mongoose.Schema.Types.ObjectId, ref: "Variant" }],
+    variantType: {
+      type: String,
+      enum: ['single', 'multiple'],
+      default: 'single'
+    },
     availabilityStatus: { type: Boolean, required: true },
     reviews: [
       {
@@ -74,13 +79,16 @@ const productSchema = new mongoose.Schema(
 );
 
 //* Check category slug already exists or not
-// productSchema.pre("save", async function (next) {
-//   const existingProduct = await this.constructor.findOne({ slug });
-//   if (existingProduct && !existingProduct._id.equals(this._id)) {
-//     throw new Error(`${this.name} already exists`);
-//   }
-//   next();
-// });
+productSchema.pre("save", async function (next) {
+  if (!this.slug) {
+    this.slug = createSlug(this.name);
+  }
+  const existingProduct = await this.constructor.findOne({ slug: this.slug });
+  if (existingProduct && !existingProduct._id.equals(this._id)) {
+    throw new Error(`${this.name} already exists`);
+  }
+  next();
+});
 
 //* Make a slug using slugify
 productSchema.pre("save", async function (next) {
@@ -92,9 +100,11 @@ productSchema.pre("save", async function (next) {
 
 //? Helpers =========================
 function autoPopulate(next) {
-  this.populate({
-    path: "subcategory",
-  });
+  this.populate([
+    { path: "subCategory" },
+    { path: "category" },
+    { path: "brand" }
+  ]);
   next();
 }
 
