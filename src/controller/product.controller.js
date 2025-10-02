@@ -5,7 +5,7 @@ const { validateProduct } = require("../validation/product.validation");
 const { uploadToCloudinary, deleteFile } = require("../helpers/cloudinary");
 const productModel = require("../models/product.model");
 const { generateQRCode } = require("../helpers/qrcodeGenerator");
-const { generateBarcode } = require("../helpers/generate");
+const { generateBarcode } = require("../helpers/generateBarCode.js");
 
 //* Create a product
 exports.createProduct = asyncHandler(async (req, res) => {
@@ -97,19 +97,30 @@ exports.filterProducts = asyncHandler(async (req, res) => {
 
   //? Category filter
   if (category) {
-    const categories = category.split(",").map(s => s.trim()).filter(Boolean);
-    filter.category = categories.length > 1 ? { $in: categories } : categories[0];
+    const categories = category
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    filter.category =
+      categories.length > 1 ? { $in: categories } : categories[0];
   }
 
   //? Subcategory filter
   if (subcategory) {
-    const subcategories = subcategory.split(",").map(s => s.trim()).filter(Boolean);
-    filter.subCategory = subcategories.length > 1 ? { $in: subcategories } : subcategories[0];
+    const subcategories = subcategory
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    filter.subCategory =
+      subcategories.length > 1 ? { $in: subcategories } : subcategories[0];
   }
 
   //? Brand filter
   if (brands) {
-    const brandList = brands.split(",").map(s => s.trim()).filter(Boolean);
+    const brandList = brands
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
     filter.brand = { $in: brandList };
   }
 
@@ -120,6 +131,8 @@ exports.filterProducts = asyncHandler(async (req, res) => {
     if (maxPrice) filter.retailPrice.$lte = Number(maxPrice);
   }
 
+  //! tag filtering operation needed
+
   const products = await productModel.find(filter).sort({ createdAt: -1 });
 
   if (!products || products.length === 0) {
@@ -129,9 +142,23 @@ exports.filterProducts = asyncHandler(async (req, res) => {
   ApiResponse.sendResponse(res, 200, "Products found", products);
 });
 
+//* Product pagination
+exports.paginateProducts = asyncHandler(async (req, res) => {
+  const { page, itemsCount } = req.params;
+  let skipAmount = (page - 1) * itemsCount;
+  const totalItems = await productModel.countDocuments();
+  const totalPages = Math.ceil(totalItems / itemsCount);
+  const products = await productModel
+    .find()
+    .skip(skipAmount)
+    .limit(itemsCount)
+  if (products.length === 0) throw new CustomError(404, "product not found");
+  ApiResponse.sendResponse(res, 200, 'products found', {...products, totalItems, totalPages})
+});
+
 //* Delete a product
 exports.deleteProduct = asyncHandler(async (req, res) => {
   const { slug } = req.params;
-  const product = await productModel.findOneAndDelete({slug});
-  ApiResponse.sendResponse(res, 200, 'product delete successful')
+  await productModel.findOneAndDelete({ slug });
+  ApiResponse.sendResponse(res, 200, "product delete successful");
 });
