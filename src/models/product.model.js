@@ -37,7 +37,7 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "ShippingInfo",
     },
-    variant: [{ type: mongoose.Schema.Types.ObjectId, ref: "Variant" }],
+    variant: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProductVariant" }],
     variantType: {
       type: String,
       enum: ['single', 'multiple'],
